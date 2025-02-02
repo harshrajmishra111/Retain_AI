@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Retain AI</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900&amp;family=Plus+Jakarta+Sans%3Awght%40400%3B500%3B700%3B800"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <style>
+      /* Dropdown menu styles */
+      .dropdown-menu {
+        display: none;
+        position: absolute;
+        right: 10px;
+        top: 60px;
+        background-color: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        width: 150px;
+      }
+
+      .dropdown-menu a {
+        display: block;
+        padding: 10px;
+        text-decoration: none;
+        color: #1a202c;
+        font-size: 14px;
+      }
+
+      .dropdown-menu a:hover {
+        background-color: #f1f5f9;
+      }
+
+      /* Show dropdown when active */
+      .dropdown-active {
+        display: block;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-[#F8FAFC]"
+    style="font-family: 'Plus Jakarta Sans', 'Noto Sans', sans-serif;"
+  >
+    <div class="flex flex-col min-h-screen w-full">
+      <header class="bg-white shadow-md py-4 px-10 flex items-center justify-between relative">
+        <div class="flex items-center gap-3">
+          <div class="size-6">
+            <svg
+              viewBox="0 0 48 48"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6 6H42L36 24L42 42H6L12 24L6 6Z"
+                fill="currentColor"
+              ></path>
+            </svg>
+          </div>
+          <h2 class="text-xl font-bold text-gray-900">RetainAI</h2>
+        </div>
+
+        <div class="flex items-center gap-6">
+          <!-- Sign In button -->
+          <button class="bg-blue-500 px-4 py-2 rounded-full text-white font-bold">
+            Sign In
+          </button>
+
+          <!-- Dropdown Button -->
+          <button
+            class="bg-gray-100 px-4 py-2 rounded-full text-gray-900 font-bold flex items-center gap-2"
+            id="dropdown-btn"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20px"
+              height="20px"
+              fill="currentColor"
+              viewBox="0 0 256 256"
+            >
+              <path
+                d="M224,128a8,8,0,0,1-8,8H40a8,8,0,0,1,0-16H216A8,8,0,0,1,224,128ZM40,72H216a8,8,0,0,0,0-16H40a8,8,0,0,0,0,16ZM216,184H40a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Z"
+              ></path>
+            </svg>
+          </button>
+
+          <!-- Dropdown Menu -->
+          <div class="dropdown-menu" id="dropdown-menu">
+            <a href="#">Profile</a>
+            <a href="#">Settings</a>
+            <a href="#">Logout</a>
+          </div>
+        </div>
+      </header>
+
+      <main class="flex flex-col items-center w-full px-6 py-10">
+        <div
+          class="w-full max-w-5xl bg-white shadow-lg rounded-lg p-8 h-[600px]"
+        >
+          <div
+            class="relative w-full h-80 bg-gray-200 rounded-lg overflow-hidden flex items-center justify-center bg-cover bg-center after:content-[''] after:absolute after:inset-0 after:bg-black after:opacity-20"
+            style="background-image: url('https://cdn.usegalileo.ai/sdxl10/53bf3192-44fb-4f68-a81f-d56a0ee9aa10.png');"
+          >
+            <p class="text-white text-5xl font-bold drop-shadow-lg absolute">
+              Churn Prediction
+            </p>
+          </div>
+          <div class="flex flex-col items-center mt-6 gap-6">
+            <p class="text-gray-700 text-lg text-center">
+              Enter a data point index to predict churn likelihood.
+            </p>
+            <input
+              type="number"
+              id="dataPointIndex"
+              class="bg-gray-100 px-6 py-3 rounded-full text-gray-900 font-bold text-center"
+              placeholder="Enter a data point index"
+            />
+
+            <button
+              class="bg-blue-500 text-white font-bold py-3 px-8 rounded-full text-lg"
+              onclick="generateOutput()"
+            >
+              Generate Output
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      function generateOutput() {
+        const index = document.getElementById("dataPointIndex").value;
+        if (index !== "") {
+          fetch("http://127.0.0.1:5000/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ index: parseInt(index) })
+          })
+          .then(response => response.json())
+          .then(data => {
+            alert(`Customer ID: ${data["Customer ID"]}\nActual Class: ${data["Actual Class"]}\nPredicted Class: ${data["Predicted Class"]}`);
+          })
+          .catch(error => console.error("Error:", error));
+        } else {
+          alert("Please enter a data point index.");
+        }
+      }
+    </script>
+  </body>
+</html>
